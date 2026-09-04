@@ -79,6 +79,8 @@
   .nav-links a{ text-decoration:none; color:var(--ink-soft); transition:color .15s; }
   .nav-links a:hover{ color:var(--grass-deep); }
   .nav-nft{ display:flex; align-items:center; gap:6px; }
+  .nav-nft-disabled{ color:#B8AEA0; cursor:default; pointer-events:none; }
+  .nav-nft-disabled .nav-soon{ opacity:0.6; }
   .nav-soon{
     font-size:10px; font-weight:800; letter-spacing:0.03em;
     color:var(--shell-deep);
@@ -308,6 +310,75 @@
   }
   @media(max-width:900px){ .steps{ grid-template-columns:1fr 1fr; } }
   @media(max-width:520px){ .steps{ grid-template-columns:1fr; } }
+
+  /* tokenomics stat cards */
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  @media(max-width:900px){ .stat-row{ grid-template-columns:1fr 1fr; } }
+  @media(max-width:520px){ .stat-row{ grid-template-columns:1fr; } }
+  .stat-card{
+    background:var(--white);
+    border:2px solid var(--line);
+    border-radius:18px;
+    padding:24px 22px;
+  }
+  .stat-card .stat-label{
+    font-size:12.5px; font-weight:800; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--grass-deep);
+    display:flex; align-items:center; gap:6px;
+    margin-bottom:10px;
+  }
+  .stat-card .stat-value{
+    font-family:'Space Mono', monospace;
+    font-size:21px;
+    font-weight:700;
+    color:var(--ink);
+    word-break:break-word;
+  }
+  .stat-card .stat-sub{
+    margin-top:6px;
+    font-size:13px;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+  .live-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--grass);
+    display:inline-block;
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+  @keyframes livePulse{
+    0%, 100%{ opacity:1; }
+    50%{ opacity:0.35; }
+  }
+  .burn-flame{
+    display:inline-block;
+    opacity:0;
+    transform:scale(0.4) translateY(4px);
+    transition:none;
+    margin-left:2px;
+  }
+  .burn-flame.burn-active{
+    animation: burnPop 1.8s ease-out;
+  }
+  @keyframes burnPop{
+    0%{ opacity:0; transform:scale(0.4) translateY(4px); }
+    15%{ opacity:1; transform:scale(1.3) translateY(-2px); }
+    35%{ transform:scale(1) translateY(-6px); }
+    70%{ opacity:1; transform:scale(1.05) translateY(-10px); }
+    100%{ opacity:0; transform:scale(0.8) translateY(-20px); }
+  }
+  .stat-card.burn-active{
+    animation: burnCardFlash 1.8s ease-out;
+  }
+  @keyframes burnCardFlash{
+    0%{ border-color:var(--line); background:var(--white); }
+    20%{ border-color:#E8792F; background:#FFF3EA; }
+    100%{ border-color:var(--line); background:var(--white); }
+  }
   .step{ position:relative; padding-top:6px; }
   .step .num{
     font-family:'Baloo 2', sans-serif; font-weight:700; font-size:16px;
@@ -406,9 +477,10 @@
     <nav class="nav-links">
       <a href="#story">Story</a>
       <a href="#chart">Chart</a>
+      <a href="#tokenomics">Tokenomics</a>
       <a href="#buy">How to buy</a>
       <a href="#community">Community</a>
-      <a href="#nft" class="nav-nft">NFT <span class="nav-soon">Soon</span></a>
+      <span class="nav-nft nav-nft-disabled">NFT <span class="nav-soon">Soon</span></span>
     </nav>
     <div class="nav-cta">
       <a class="btn btn-ghost btn-sm" href="https://www.coingecko.com/en/coins/a-slow-runner" target="_blank" rel="noopener">CoinGecko</a>
@@ -458,11 +530,12 @@
   <section id="story">
     <div class="wrap">
       <div class="story-cols">
-        <div class="lede">"Everyone else is racing the chart. We're just racing time — and we've got more of it."</div>
+        <div class="lede">"We were never in a hurry."</div>
         <div class="body">
-          <p>$SNAIL isn't trying to outrun anything. It's built on the one truth every trader eventually learns the hard way: the coins that sprint are usually the ones that rug first. A snail can't run from anything — so it never does.</p>
-          <p>What it does instead is keep moving. Slowly, visibly, one block at a time, leaving a trail that anyone can follow from wherever it started to wherever it's headed next.</p>
-          <p>Launched quietly in August 2025. No rush then, no rush now — still here, still crawling.</p>
+          <p>We're a snail. We're slow. We're still here.</p>
+          <p>$SNAIL launched in August 2025 with one simple idea: there's always another coin trying to move faster.</p>
+          <p>We decided not to.</p>
+          <p>No complicated lore. No grand promises. Just a snail, a trail, and wherever this thing goes next.</p>
         </div>
       </div>
     </div>
@@ -483,6 +556,47 @@
       </div>
       <div class="hero-ctas" style="margin-top:24px;">
         <a class="btn btn-ghost" href="https://dexscreener.com/solana/5qcedqaitmbtmdzhpueeqqe6reomd7efge4wd3lsjt8j" target="_blank" rel="noopener">Open on Dexscreener</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tokenomics">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Tokenomics</h2>
+        <p>Started at 1B. We burn a little, every once in a while. No schedule, no promises — just less supply over time.</p>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-label">Total Supply (Launch)</div>
+          <div class="stat-value">1,000,000,000</div>
+          <div class="stat-sub">$SNAIL at genesis</div>
+        </div>
+        <div class="stat-card" id="burnedCard">
+          <div class="stat-label"><span class="live-dot"></span> Burned So Far <span class="burn-flame" id="burnFlame">🔥</span></div>
+          <div class="stat-value" id="burnedValue">1,519,533.531433</div>
+          <div class="stat-sub">Removed from supply, on-chain</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="live-dot"></span> Circulating Supply</div>
+          <div class="stat-value" id="supplyValue">998,480,466.468567</div>
+          <div class="stat-sub">Live from Solana RPC</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="live-dot"></span> Market Cap</div>
+          <div class="stat-value" id="mcapValue">—</div>
+          <div class="stat-sub">Live from Dexscreener</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="live-dot"></span> Liquidity</div>
+          <div class="stat-value" id="liqValue">—</div>
+          <div class="stat-sub">Live from Dexscreener</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span class="live-dot"></span> Holders</div>
+          <div class="stat-value" id="holdersValue">—</div>
+          <div class="stat-sub">Live from Birdeye</div>
+        </div>
       </div>
     </div>
   </section>
@@ -533,6 +647,13 @@
           <div>
             <div class="lc-name">X / Twitter</div>
             <div class="lc-sub">@SnailOnChain</div>
+          </div>
+          <span class="lc-arrow">↗</span>
+        </a>
+        <a class="link-card" href="https://t.me/SnailASlowRunner" target="_blank" rel="noopener">
+          <div>
+            <div class="lc-name">Telegram</div>
+            <div class="lc-sub">Join the group</div>
           </div>
           <span class="lc-arrow">↗</span>
         </a>
@@ -598,6 +719,103 @@
       setTimeout(() => t.classList.remove('show'), 1800);
     });
   }
+
+  const TOKEN_MINT = 'EG6WeiR2DymUVVjNHEU4MEJXmWnzXJhk3JerRy4gpump';
+  const DEX_PAIR = '5qcedqaitmbtmdzhpueeqqe6reomd7efge4wd3lsjt8j';
+  const LAUNCH_SUPPLY = 1000000000;
+  // Get a free API key at https://birdeye.so/ (no card needed) and paste it below to enable live holder count.
+  const BIRDEYE_API_KEY = 'YOUR_BIRDEYE_API_KEY_HERE';
+
+  let lastKnownSupply = null;
+
+  function fmtNum(n, decimals){
+    return Number(n).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  }
+  function fmtUsd(n){
+    return '$' + Number(n).toLocaleString('en-US', { maximumFractionDigits: 0 });
+  }
+
+  function triggerBurnAnimation(){
+    const flame = document.getElementById('burnFlame');
+    const card = document.getElementById('burnedCard');
+    if(!flame || !card) return;
+    flame.classList.remove('burn-active');
+    card.classList.remove('burn-active');
+    void flame.offsetWidth; // restart animation
+    flame.classList.add('burn-active');
+    card.classList.add('burn-active');
+  }
+
+  // Live supply + burned amount, straight from the Solana chain (free, no API key)
+  async function updateSupplyAndBurn(){
+    const supplyEl = document.getElementById('supplyValue');
+    const burnedEl = document.getElementById('burnedValue');
+    try{
+      const res = await fetch('https://api.mainnet-beta.solana.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getTokenSupply', params: [TOKEN_MINT] })
+      });
+      const data = await res.json();
+      const value = data && data.result && data.result.value;
+      if(value && value.uiAmount != null){
+        const current = Number(value.uiAmountString || value.uiAmount);
+        if(lastKnownSupply !== null && current < lastKnownSupply - 0.000001){
+          triggerBurnAnimation();
+        }
+        lastKnownSupply = current;
+        supplyEl.textContent = fmtNum(current, 6);
+        burnedEl.textContent = fmtNum(LAUNCH_SUPPLY - current, 6);
+      }
+      // if the RPC response is missing the expected value, leave the current text as-is
+    }catch(e){
+      // network/CORS issue (e.g. inside a sandboxed preview) — keep last known/fallback text
+    }
+  }
+
+  // Live market cap + liquidity, from Dexscreener (free, no API key)
+  async function updateMarketData(){
+    const mcapEl = document.getElementById('mcapValue');
+    const liqEl = document.getElementById('liqValue');
+    try{
+      const res = await fetch('https://api.dexscreener.com/latest/dex/pairs/solana/' + DEX_PAIR);
+      const data = await res.json();
+      const pair = data.pair || (data.pairs && data.pairs[0]);
+      const mcap = pair && (pair.fdv || pair.marketCap);
+      const liq = pair && pair.liquidity && pair.liquidity.usd;
+      if(mcap && mcapEl) mcapEl.textContent = fmtUsd(mcap);
+      if(liq && liqEl) liqEl.textContent = fmtUsd(liq);
+      // if unavailable, leave the current text as-is
+    }catch(e){
+      // network/CORS issue (e.g. inside a sandboxed preview) — keep last known/fallback text
+    }
+  }
+
+  // Live holder count, from Birdeye (free tier, needs your own API key above)
+  async function updateHolders(){
+    const el = document.getElementById('holdersValue');
+    if(!el || !BIRDEYE_API_KEY || BIRDEYE_API_KEY === 'YOUR_BIRDEYE_API_KEY_HERE') return;
+    try{
+      const res = await fetch('https://public-api.birdeye.so/defi/token_overview?address=' + TOKEN_MINT, {
+        headers: { 'X-API-KEY': BIRDEYE_API_KEY, 'x-chain': 'solana' }
+      });
+      const data = await res.json();
+      const holders = data && data.data && data.data.holder;
+      if(holders) el.textContent = Number(holders).toLocaleString('en-US');
+      // if unavailable, leave the current text as-is
+    }catch(e){
+      // network/CORS issue (e.g. inside a sandboxed preview) — keep last known/fallback text
+    }
+  }
+
+  function refreshAllStats(){
+    updateSupplyAndBurn();
+    updateMarketData();
+    updateHolders();
+  }
+
+  refreshAllStats();
+  setInterval(refreshAllStats, 30000);
 </script>
 
 </body>
