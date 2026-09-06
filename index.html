@@ -574,12 +574,12 @@
         </div>
         <div class="stat-card" id="burnedCard">
           <div class="stat-label"><span class="live-dot"></span> Burned So Far <span class="burn-flame" id="burnFlame">🔥</span></div>
-          <div class="stat-value" id="burnedValue">1,519,533.531433</div>
+          <div class="stat-value" id="burnedValue">1,960,648.628584</div>
           <div class="stat-sub">Removed from supply, on-chain</div>
         </div>
         <div class="stat-card">
           <div class="stat-label"><span class="live-dot"></span> Circulating Supply</div>
-          <div class="stat-value" id="supplyValue">998,480,466.468567</div>
+          <div class="stat-value" id="supplyValue">998,039,351.371416</div>
           <div class="stat-sub">Live from Solana RPC</div>
         </div>
         <div class="stat-card">
@@ -747,30 +747,45 @@
   }
 
   // Live supply + burned amount, straight from the Solana chain (free, no API key)
+  const RPC_ENDPOINTS = [
+    'https://rpc.ankr.com/solana',
+    'https://solana-rpc.publicnode.com',
+    'https://api.mainnet-beta.solana.com'
+  ];
+
+  async function fetchTokenSupply(){
+    for(const endpoint of RPC_ENDPOINTS){
+      try{
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getTokenSupply', params: [TOKEN_MINT] })
+        });
+        const data = await res.json();
+        const value = data && data.result && data.result.value;
+        if(value && value.uiAmount != null){
+          return Number(value.uiAmountString || value.uiAmount);
+        }
+      }catch(e){
+        // this endpoint failed/blocked — try the next one
+      }
+    }
+    return null;
+  }
+
   async function updateSupplyAndBurn(){
     const supplyEl = document.getElementById('supplyValue');
     const burnedEl = document.getElementById('burnedValue');
-    try{
-      const res = await fetch('https://api.mainnet-beta.solana.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'getTokenSupply', params: [TOKEN_MINT] })
-      });
-      const data = await res.json();
-      const value = data && data.result && data.result.value;
-      if(value && value.uiAmount != null){
-        const current = Number(value.uiAmountString || value.uiAmount);
-        if(lastKnownSupply !== null && current < lastKnownSupply - 0.000001){
-          triggerBurnAnimation();
-        }
-        lastKnownSupply = current;
-        supplyEl.textContent = fmtNum(current, 6);
-        burnedEl.textContent = fmtNum(LAUNCH_SUPPLY - current, 6);
+    const current = await fetchTokenSupply();
+    if(current != null){
+      if(lastKnownSupply !== null && current < lastKnownSupply - 0.000001){
+        triggerBurnAnimation();
       }
-      // if the RPC response is missing the expected value, leave the current text as-is
-    }catch(e){
-      // network/CORS issue (e.g. inside a sandboxed preview) — keep last known/fallback text
+      lastKnownSupply = current;
+      supplyEl.textContent = fmtNum(current, 6);
+      burnedEl.textContent = fmtNum(LAUNCH_SUPPLY - current, 6);
     }
+    // if every endpoint failed, leave the current text as-is
   }
 
   // Live market cap + liquidity, from Dexscreener (free, no API key)
